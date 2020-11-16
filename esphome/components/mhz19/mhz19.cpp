@@ -7,7 +7,7 @@ namespace mhz19 {
 static const char *TAG = "mhz19";
 static const uint8_t MHZ19_REQUEST_LENGTH = 8;
 static const uint8_t MHZ19_RESPONSE_LENGTH = 9;
-static const uint8_t MHZ19_COMMAND_GET_PPM[] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00};
+static const uint8_t MHZ19_COMMAND_GET_PPM[] = {0xFF, 0x01, 0x85, 0x00, 0x00, 0x00, 0x00, 0x00};
 static const uint8_t MHZ19_COMMAND_ABC_ENABLE[] = {0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00};
 static const uint8_t MHZ19_COMMAND_ABC_DISABLE[] = {0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00};
 static const uint8_t MHZ19_COMMAND_CALIBRATE_ZERO[] = {0xFF, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -36,7 +36,7 @@ void MHZ19Component::update() {
     return;
   }
 
-  if (response[0] != 0xFF || response[1] != 0x86) {
+  if (response[0] != 0xFF || response[1] != 0x85) {
     ESP_LOGW(TAG, "Invalid preamble from MHZ19!");
     this->status_set_warning();
     return;
@@ -50,7 +50,7 @@ void MHZ19Component::update() {
   }
 
   this->status_clear_warning();
-  const uint16_t ppm = (uint16_t(response[2]) << 8) | response[3];
+  const uint16_t ppm = (uint16_t(response[4]) << 8) | response[5];
   const int temp = int(response[4]) - 40;
   const uint8_t status = response[5];
 
